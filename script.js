@@ -26,13 +26,14 @@ const deleteCard = (dataType, toList) => {
         const card = event.target.closest(".card");
         const title = card.querySelector(".title").textContent;
         const description = card.querySelector(".description").textContent;
-
+        
+        drawList(dataType);
         console.log(title, description);
 
         dataType.forEach((el, i) => {
           if (el.title === title && el.description === description) {
             dataType.splice(i, 1);
-            card.remove();
+
             console.log(dataType);
           }
         });
