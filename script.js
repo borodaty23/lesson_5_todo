@@ -14,45 +14,131 @@ const drawList = (dataType) => {
                   </br>
                   <button class = "editButton">Edit</button>
                   <button class="deleteButton">Delete</button>
-              </div>
+                  
+              </di>
           `;
   });
 };
 
-const deleteCard = (dataType, toList) => {
-  toList.addEventListener("click", (event) => {
-    switch (event.target.classList.value) {
-      case "deleteButton":
-        const card = event.target.closest(".card");
-        const title = card.querySelector(".title").textContent;
-        const description = card.querySelector(".description").textContent;
-        
-        drawList(dataType);
-        console.log(title, description);
+const deleteCard = (dataType) => {
+  const card = event.target.closest(".card");
+  const title = card.querySelector(".title").textContent;
+  const description = card.querySelector(".description").textContent;
 
-        dataType.forEach((el, i) => {
-          if (el.title === title && el.description === description) {
-            dataType.splice(i, 1);
+  drawList(dataType);
+  console.log(title, description);
 
-            console.log(dataType);
-          }
-        });
+  dataType.forEach((el, i) => {
+    if (el.title === title && el.description === description) {
+      dataType.splice(i, 1);
 
-        break;
-      case "editButton":
-        console.log(event.target);
-        break;
-      default:
-        break;
+      console.log(dataType);
     }
   });
 };
 
+const editCard = (dataType, modalWrapper) => {
+  const cardTwo = event.target.closest(".card");
+  const titleTwo = cardTwo.querySelector(".title").textContent;
+  const descriptionTwo = cardTwo.querySelector(".description").textContent;
+
+  const newTitile = document.querySelector("#title");
+  const newDescription = document.querySelector("#description");
+  const NewButton = document.querySelector("#submit");
+
+  modalWrapper.style.display = "block";
+
+  newTitile.value = titleTwo;
+  newDescription.value = descriptionTwo;
+
+  NewButton.addEventListener("click", (event) => {
+    dataType.forEach((el, i) => {
+      if (el.title === titleTwo && el.description === descriptionTwo) {
+        dataType.splice(i, 1, {
+          title: newTitile.value,
+          description: newDescription.value,
+        });
+      }
+
+      drawList(dataType);
+      modalWrapper.style.display = "none";
+    });
+  });
+
+  const closeButton = document.querySelector("#closeButton");
+  closeButton.addEventListener("click", () => {
+    modalWrapper.style.display = "none";
+  });
+};
+
+// const deleteCard = (dataType, todoList, modalWrapper) => {
+//   todoList.addEventListener("click", (event) => {
+//     switch (event.target.classList.value) {
+//       case "deleteButton":
+//         const card = event.target.closest(".card");
+//         const title = card.querySelector(".title").textContent;
+//         const description = card.querySelector(".description").textContent;
+
+//         drawList(dataType);
+//         console.log(title, description);
+
+//         dataType.forEach((el, i) => {
+//           if (el.title === title && el.description === description) {
+//             dataType.splice(i, 1);
+
+//             console.log(dataType);
+//           }
+//         });
+
+//         break;
+//       case "editButton":
+//         const cardTwo = event.target.closest(".card");
+//         const titleTwo = cardTwo.querySelector(".title").textContent;
+//         const descriptionTwo =
+//           cardTwo.querySelector(".description").textContent;
+
+//         const newTitile = document.querySelector("#title");
+//         const newDescription = document.querySelector("#description");
+//         const NewButton = document.querySelector("#submit");
+
+//         modalWrapper.style.display = "block";
+
+//         newTitile.value = titleTwo;
+//         newDescription.value = descriptionTwo;
+
+//         NewButton.addEventListener("click", (event) => {
+//           dataType.forEach((el, i) => {
+//             if (el.title === titleTwo && el.description === descriptionTwo) {
+//               dataType.splice(i, 1, {
+//                 title: newTitile.value,
+//                 description: newDescription.value,
+//               });
+//             }
+
+//             drawList(dataType);
+//             modalWrapper.style.display = "none";
+//           });
+
+//         });
+
+//         const closeButton = document.querySelector("#closeButton");
+//         closeButton.addEventListener("click", () => {
+//           modalWrapper.style.display = "none";
+//         });
+
+//         break;
+//       default:
+//         break;
+//     }
+//   });
+// };
+
 const init = () => {
+  const modalWrapper = document.querySelector(".wrapper");
   const todoList = document.querySelector(".todoList");
   const form = document.querySelector("#form");
   const inputTitle = document.querySelector("#inputTitle");
-  const inputDescriptio = document.querySelector("#inputDescriptio");
+  const inputDescription = document.querySelector("#inputDescription");
   const addCardButton = document.querySelector("#addCardButton");
 
   const data = {
@@ -71,8 +157,71 @@ const init = () => {
 
     form.reset();
 
+    todoList.addEventListener("click", (event) => {
+      switch (event.target.classList.value) {
+          
+        case "deleteButton":
+          //   const card = event.target.closest(".card");
+          //   const title = card.querySelector(".title").textContent;
+          //   const description = card.querySelector(".description").textContent;
+
+          //   drawList(data.todo);
+          //   console.log(title, description);
+
+          //   data.todo.forEach((el, i) => {
+          //     if (el.title === title && el.description === description) {
+          //       data.todo.splice(i, 1);
+
+          //       console.log(data.todo);
+          //     }
+          //   });
+
+          deleteCard(data.todo);
+
+          break;
+        case "editButton":
+          editCard(data.todo, modalWrapper);
+          //   const cardTwo = event.target.closest(".card");
+          //   const titleTwo = cardTwo.querySelector(".title").textContent;
+          //   const descriptionTwo =
+          //     cardTwo.querySelector(".description").textContent;
+
+          //   const newTitile = document.querySelector("#title");
+          //   const newDescription = document.querySelector("#description");
+          //   const NewButton = document.querySelector("#submit");
+
+          //   modalWrapper.style.display = "block";
+
+          //   newTitile.value = titleTwo;
+          //   newDescription.value = descriptionTwo;
+
+          //   NewButton.addEventListener("click", (event) => {
+          //     data.todo.forEach((el, i) => {
+          //       if (el.title === titleTwo && el.description === descriptionTwo) {
+          //         data.todo.splice(i, 1, {
+          //           title: newTitile.value,
+          //           description: newDescription.value,
+          //         });
+          //       }
+
+          //       drawList(data.todo);
+          //       modalWrapper.style.display = "none";
+          //     });
+          //   });
+
+          //   const closeButton = document.querySelector("#closeButton");
+          //   closeButton.addEventListener("click", () => {
+          //     modalWrapper.style.display = "none";
+          //   });
+
+          break;
+        default:
+          break;
+      }
+    });
+
     drawList(data.todo);
-    deleteCard(data.todo, todoList);
+    // deleteCard(data.todo, todoList, modalWrapper);
   });
 };
 
