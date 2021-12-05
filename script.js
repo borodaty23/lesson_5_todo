@@ -1,10 +1,7 @@
-const drawList = (dataType) => {
-  const todoSection = document.querySelector("#todo");
-
-  todoSection.innerHTML = "";
-
+const drawList = (dataType, section) => {
+  section.innerHTML = "";
   dataType.forEach((element) => {
-    todoSection.innerHTML += `
+    section.innerHTML += `
               <div class="card">
               <span>Title:</span>
                   <span class="title">${element.title}</span>
@@ -14,6 +11,7 @@ const drawList = (dataType) => {
                   </br>
                   <button class = "editButton">Edit</button>
                   <button class="deleteButton">Delete</button>
+                  <button class="nextButton">Next</button>
                   
               </di>
           `;
@@ -24,8 +22,8 @@ const deleteCard = (dataType) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
+  const todoSection = document.querySelector("#todo");
 
-  drawList(dataType);
   console.log(title, description);
 
   dataType.forEach((el, i) => {
@@ -34,33 +32,35 @@ const deleteCard = (dataType) => {
 
       console.log(dataType);
     }
+    drawList(dataType, todoSection);
   });
 };
 
 const editCard = (dataType, modalWrapper) => {
-  const cardTwo = event.target.closest(".card");
-  const titleTwo = cardTwo.querySelector(".title").textContent;
-  const descriptionTwo = cardTwo.querySelector(".description").textContent;
+  const card = event.target.closest(".card");
+  const title = card.querySelector(".title").textContent;
+  const description = card.querySelector(".description").textContent;
 
   const newTitile = document.querySelector("#title");
   const newDescription = document.querySelector("#description");
-  const NewButton = document.querySelector("#submit");
+  const submitButton = document.querySelector("#submit");
+  const todoSection = document.querySelector("#todo");
 
   modalWrapper.style.display = "block";
 
-  newTitile.value = titleTwo;
-  newDescription.value = descriptionTwo;
+  newTitile.value = title;
+  newDescription.value = description;
 
-  NewButton.addEventListener("click", (event) => {
+  submitButton.addEventListener("click", (event) => {
     dataType.forEach((el, i) => {
-      if (el.title === titleTwo && el.description === descriptionTwo) {
+      if (el.title === title && el.description === description) {
         dataType.splice(i, 1, {
           title: newTitile.value,
           description: newDescription.value,
         });
       }
 
-      drawList(dataType);
+      drawList(dataType, todoSection);
       modalWrapper.style.display = "none";
     });
   });
@@ -71,67 +71,21 @@ const editCard = (dataType, modalWrapper) => {
   });
 };
 
-// const deleteCard = (dataType, todoList, modalWrapper) => {
-//   todoList.addEventListener("click", (event) => {
-//     switch (event.target.classList.value) {
-//       case "deleteButton":
-//         const card = event.target.closest(".card");
-//         const title = card.querySelector(".title").textContent;
-//         const description = card.querySelector(".description").textContent;
+const createNextCard = (dataTodo, inProgress) => {
+  const card = event.target.closest(".card");
+  const title = card.querySelector(".title").textContent;
+  const description = card.querySelector(".description").textContent;
+  const todoSection = document.querySelector("#todo");
 
-//         drawList(dataType);
-//         console.log(title, description);
-
-//         dataType.forEach((el, i) => {
-//           if (el.title === title && el.description === description) {
-//             dataType.splice(i, 1);
-
-//             console.log(dataType);
-//           }
-//         });
-
-//         break;
-//       case "editButton":
-//         const cardTwo = event.target.closest(".card");
-//         const titleTwo = cardTwo.querySelector(".title").textContent;
-//         const descriptionTwo =
-//           cardTwo.querySelector(".description").textContent;
-
-//         const newTitile = document.querySelector("#title");
-//         const newDescription = document.querySelector("#description");
-//         const NewButton = document.querySelector("#submit");
-
-//         modalWrapper.style.display = "block";
-
-//         newTitile.value = titleTwo;
-//         newDescription.value = descriptionTwo;
-
-//         NewButton.addEventListener("click", (event) => {
-//           dataType.forEach((el, i) => {
-//             if (el.title === titleTwo && el.description === descriptionTwo) {
-//               dataType.splice(i, 1, {
-//                 title: newTitile.value,
-//                 description: newDescription.value,
-//               });
-//             }
-
-//             drawList(dataType);
-//             modalWrapper.style.display = "none";
-//           });
-
-//         });
-
-//         const closeButton = document.querySelector("#closeButton");
-//         closeButton.addEventListener("click", () => {
-//           modalWrapper.style.display = "none";
-//         });
-
-//         break;
-//       default:
-//         break;
-//     }
-//   });
-// };
+  dataTodo.forEach((el, i) => {
+    if (el.title === title && el.description === description) {
+      inProgress.push({ title: title, description: description });
+      dataTodo.splice(i, 1);
+      console.log(inProgress);
+    }
+    drawList(dataTodo, todoSection);
+  });
+};
 
 const init = () => {
   const modalWrapper = document.querySelector(".wrapper");
@@ -140,6 +94,8 @@ const init = () => {
   const inputTitle = document.querySelector("#inputTitle");
   const inputDescription = document.querySelector("#inputDescription");
   const addCardButton = document.querySelector("#addCardButton");
+  const SectionInProgress = document.querySelector("#inProgress");
+  const todoSection = document.querySelector("#todo");
 
   const data = {
     todo: [],
@@ -159,60 +115,17 @@ const init = () => {
 
     todoList.addEventListener("click", (event) => {
       switch (event.target.classList.value) {
-          
         case "deleteButton":
-          //   const card = event.target.closest(".card");
-          //   const title = card.querySelector(".title").textContent;
-          //   const description = card.querySelector(".description").textContent;
-
-          //   drawList(data.todo);
-          //   console.log(title, description);
-
-          //   data.todo.forEach((el, i) => {
-          //     if (el.title === title && el.description === description) {
-          //       data.todo.splice(i, 1);
-
-          //       console.log(data.todo);
-          //     }
-          //   });
-
           deleteCard(data.todo);
 
           break;
         case "editButton":
           editCard(data.todo, modalWrapper);
-          //   const cardTwo = event.target.closest(".card");
-          //   const titleTwo = cardTwo.querySelector(".title").textContent;
-          //   const descriptionTwo =
-          //     cardTwo.querySelector(".description").textContent;
 
-          //   const newTitile = document.querySelector("#title");
-          //   const newDescription = document.querySelector("#description");
-          //   const NewButton = document.querySelector("#submit");
-
-          //   modalWrapper.style.display = "block";
-
-          //   newTitile.value = titleTwo;
-          //   newDescription.value = descriptionTwo;
-
-          //   NewButton.addEventListener("click", (event) => {
-          //     data.todo.forEach((el, i) => {
-          //       if (el.title === titleTwo && el.description === descriptionTwo) {
-          //         data.todo.splice(i, 1, {
-          //           title: newTitile.value,
-          //           description: newDescription.value,
-          //         });
-          //       }
-
-          //       drawList(data.todo);
-          //       modalWrapper.style.display = "none";
-          //     });
-          //   });
-
-          //   const closeButton = document.querySelector("#closeButton");
-          //   closeButton.addEventListener("click", () => {
-          //     modalWrapper.style.display = "none";
-          //   });
+          break;
+        case "nextButton":
+          createNextCard(data.todo, data.inProgress);
+          drawList(data.inProgress, SectionInProgress);
 
           break;
         default:
@@ -220,8 +133,7 @@ const init = () => {
       }
     });
 
-    drawList(data.todo);
-    // deleteCard(data.todo, todoList, modalWrapper);
+    drawList(data.todo, todoSection);
   });
 };
 
