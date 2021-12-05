@@ -24,19 +24,16 @@ const deleteCard = (dataType) => {
   const description = card.querySelector(".description").textContent;
   const todoSection = document.querySelector("#todo");
 
-  console.log(title, description);
+  console.log(dataType);
 
   dataType.forEach((el, i) => {
     if (el.title === title && el.description === description) {
       dataType.splice(i, 1);
-
-      console.log(dataType);
     }
-    drawList(dataType, todoSection);
   });
 };
 
-const editCard = (dataType, modalWrapper) => {
+const editCard = (dataType, modalWrapper, c) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
@@ -59,8 +56,8 @@ const editCard = (dataType, modalWrapper) => {
           description: newDescription.value,
         });
       }
+      drawList(dataType, c);
 
-      drawList(dataType, todoSection);
       modalWrapper.style.display = "none";
     });
   });
@@ -83,7 +80,6 @@ const createNextCard = (dataTodo, inProgress) => {
       dataTodo.splice(i, 1);
       console.log(inProgress);
     }
-    drawList(dataTodo, todoSection);
   });
 };
 
@@ -94,8 +90,9 @@ const init = () => {
   const inputTitle = document.querySelector("#inputTitle");
   const inputDescription = document.querySelector("#inputDescription");
   const addCardButton = document.querySelector("#addCardButton");
-  const SectionInProgress = document.querySelector("#inProgress");
+  const sectionInProgress = document.querySelector("#inProgress");
   const todoSection = document.querySelector("#todo");
+  const cardBloks = document.querySelector(".cardBloks");
 
   const data = {
     todo: [],
@@ -113,19 +110,29 @@ const init = () => {
 
     form.reset();
 
-    todoList.addEventListener("click", (event) => {
+    cardBloks.addEventListener("click", (event) => {
+      let a = event.target.closest("#todo");
       switch (event.target.classList.value) {
         case "deleteButton":
-          deleteCard(data.todo);
-
+          if (a === todoSection) {
+            deleteCard(data.todo);
+            drawList(data.todo, todoSection);
+          } else {
+            deleteCard(data.inProgress);
+            drawList(data.inProgress, sectionInProgress);
+          }
           break;
         case "editButton":
-          editCard(data.todo, modalWrapper);
-
+          if (a === todoSection) {
+            editCard(data.todo, modalWrapper, todoSection);
+          } else {
+            editCard(data.inProgress, modalWrapper, sectionInProgress);
+          }
           break;
         case "nextButton":
           createNextCard(data.todo, data.inProgress);
-          drawList(data.inProgress, SectionInProgress);
+          drawList(data.inProgress, sectionInProgress);
+          drawList(data.todo, todoSection);
 
           break;
         default:
