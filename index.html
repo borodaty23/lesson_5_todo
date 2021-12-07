@@ -8,20 +8,38 @@
     <link rel="stylesheet" href="css.css">
 </head>
 <body>
-<form  id="form" action="">
-    <input type="text" id="inputTitle" placeholder="title:">
-    <input type="text" id="inputDescription" placeholder="description:">
-    <button id="addCardButton">Add my card</button>
-</form>
+<div class="wrapperTodoList">
+    <!-- <div class="container"> -->
+        <div class="cardBloks">
+            <form  class="form" id="form" action="">
+                <input class="input" type="text" id="inputTitle" placeholder="title:">
+                <input class="input" type="text" id="inputDescription" placeholder="description:">
+                <button class="formButton" id="addCardButton">Add my card</button>
+            </form>
 
-<div class="cardBloks">
-    <div class="todoList">
-        <div id="todo" style="width: 400px; padding: 1rem; border: 2px solid red;"></div>
-    </div>
+            <div class="todoList taskList">
+                <h3 class="cardTitle">
+                    To do
+                </h3>
+            
+                <div id="todo" ></div>
+            </div>
 
-    <div class="inProgressList"> 
-        <div id="inProgress" style="width: 400px; padding: 1rem; border: 2px solid red;"></div>
-    </div>
+            <div class="inProgressList taskList"> 
+                <h3 class="cardTitle">
+                    In progress
+                </h3>
+                <div id="inProgress" ></div>
+            </div>
+
+            <div class="done taskList"> 
+                <h3 class="cardTitle">
+                    Completed
+                </h3>
+                <div id="done" ></div>
+            </div>
+        </div>
+    <!-- </div> -->
 </div>
 
 <div class="wrapper">
@@ -30,7 +48,7 @@
             <button class="roundButton" id="closeButton">X</button>
             <input  id="title" type="text"> 
             <input id="description" type="text">
-            <button id = "submit">Submit</button>
+            <button id ="submit">Submit</button>
         </div>
     </div>
 </div>

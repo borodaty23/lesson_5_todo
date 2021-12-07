@@ -18,6 +18,14 @@ const drawList = (dataType, section) => {
   });
 };
 
+// const returnVariable = (card, title, description) => {
+//   const card = event.target.closest(".card");
+//   const title = card.querySelector(".title").textContent;
+//   const description = card.querySelector(".description").textContent;
+
+//   return card, title, description;
+// };
+
 const deleteCard = (dataType) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
@@ -33,7 +41,7 @@ const deleteCard = (dataType) => {
   });
 };
 
-const editCard = (dataType, modalWrapper, c) => {
+const editCard = (dataType, modalWrapper, sectionType) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
@@ -56,7 +64,7 @@ const editCard = (dataType, modalWrapper, c) => {
           description: newDescription.value,
         });
       }
-      drawList(dataType, c);
+      drawList(dataType, sectionType);
 
       modalWrapper.style.display = "none";
     });
