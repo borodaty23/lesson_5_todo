@@ -1,4 +1,6 @@
 const drawList = (dataType, sectionId) => {
+  // новая функция отрисовки которая принимает айди
+  //вместо секции   разница в названиях последние буквы tt
   let section = document.querySelector(`#${sectionId}`);
   console.log();
   section.innerHTML = "";
@@ -34,6 +36,8 @@ const drawList = (dataType, sectionId) => {
 };
 
 const drawListt = (dataType, section) => {
+  // старая функция отрисовки
+  
   console.log();
   section.innerHTML = "";
   dataType.forEach((element) => {
@@ -185,9 +189,9 @@ const init = () => {
     cardBloks.addEventListener("click", (event) => {
       //   let a = event.target.closest("#todo");
       const desc = event.target.closest(".desc");
-      const d = document.querySelectorAll(".desc");
+      const descsMass = document.querySelectorAll(".desc");
       //   const nextDesc = desc.next().find("div.desc").id;
-      const lastDesk = d[d.length - 1].id;
+      const lastDesk = descsMass[descsMass.length - 1].id;
       switch (event.target.classList.value) {
         case "deleteButton":
           deleteCard(data[desc.id], data.deleted);
@@ -213,9 +217,9 @@ const init = () => {
             drawListt(data.inProgress, sectionInProgress);
             drawListt(data.done, sectionDone);
           }
-        //   createNextCard(data[desc.id], data.inProgress);
-        //    drawList(data.inProgress, sectionInProgress);
-        //     drawList(data.todo, todoSection);
+          //   createNextCard(data[desc.id], data.inProgress);
+          //    drawList(data.inProgress, sectionInProgress);
+          //     drawList(data.todo, todoSection);
 
           break;
         case "clearAllButton":
