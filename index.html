@@ -10,33 +10,44 @@
 <body>
 <div class="wrapperTodoList">
     <!-- <div class="container"> -->
+
+        <form  class="form" id="form" action="">
+            <input class="input" type="text" id="inputTitle" placeholder="title:">
+            <input class="input" type="text" id="inputDescription" placeholder="description:">
+            <button class="formButton" id="addCardButton">Add my card</button>
+        </form>
         <div class="cardBloks">
-            <form  class="form" id="form" action="">
-                <input class="input" type="text" id="inputTitle" placeholder="title:">
-                <input class="input" type="text" id="inputDescription" placeholder="description:">
-                <button class="formButton" id="addCardButton">Add my card</button>
-            </form>
+            
 
             <div class="todoList taskList">
                 <h3 class="cardTitle">
                     To do
                 </h3>
             
-                <div id="todo" ></div>
+                <div class="desc" id="todo" ></div>
             </div>
 
             <div class="inProgressList taskList"> 
                 <h3 class="cardTitle">
                     In progress
                 </h3>
-                <div id="inProgress" ></div>
+                <div class="desc" id="inProgress" ></div>
             </div>
 
             <div class="done taskList"> 
                 <h3 class="cardTitle">
                     Completed
                 </h3>
-                <div id="done" ></div>
+                <div class="desc" id="done" ></div>
+            </div>
+
+
+            <div class="delete taskList">
+                <h3 class="cardTitle">
+                    Deleted
+                </h3>
+                <div class="desc" id="deleted" ></div>
+                <button class="clearAllButton" >Clear ALL</button>
             </div>
         </div>
     <!-- </div> -->
