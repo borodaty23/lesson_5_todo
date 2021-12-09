@@ -1,10 +1,8 @@
-const drawList = (dataType, sectionId) => {
-  // новая функция отрисовки которая принимает айди
-  //вместо секции   разница в названиях последние буквы tt
+const drawList = (data, sectionId) => {
   let section = document.querySelector(`#${sectionId}`);
   console.log();
   section.innerHTML = "";
-  dataType.forEach((element) => {
+  data[sectionId].forEach((element) => {
     section.innerHTML += `
               <div class="card" id="${element.idd}">
               <span>Title:</span>
@@ -35,50 +33,15 @@ const drawList = (dataType, sectionId) => {
   });
 };
 
-const drawListt = (dataType, section) => {
-  // старая функция отрисовки
-  
-  console.log();
-  section.innerHTML = "";
-  dataType.forEach((element) => {
-    section.innerHTML += `
-                <div class="card" id="${element.idd}">
-                <span>Title:</span>
-                    <span class="title">${element.title}</span>
-                  </br>
-                  <span>Description:</span>
-                    <span class="description">${element.description}</span>
-                    </br>
-                    
-                    ${
-                      section.id === "todo" || section.id === "inProgress"
-                        ? `<div>
-                          <button class="editButton">Edit</button>
-                          <button class="deleteButton">Delete</button>
-                          <button class="nextButton">Next</button>
-                        </div>`
-                        : section.id === "done"
-                        ? `<div>
-                        <button class="editButton">Edit</button>
-                        <button class="deleteButton">Delete</button>
-                        
-                      </div>`
-                        : `<div> </div>`
-                    }
-                    
-                </div>
-            `;
-  });
-};
 // const returnVariable = (card, title, description) => {
 //   const card = event.target.closest(".card");
 //   const title = card.querySelector(".title").textContent;
 //   const description = card.querySelector(".description").textContent;
 
-//   return card, title, description;
+//   return {card, title, description};
 // };
 
-const deleteCard = (dataType, dataTypeDeleted) => {
+const deleteCard = (data, nextData) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
@@ -87,10 +50,10 @@ const deleteCard = (dataType, dataTypeDeleted) => {
 
   console.log();
 
-  dataType.forEach((el, i) => {
+  data.forEach((el, i) => {
     if (el.title === title && el.description === description && el.idd == ed) {
-      dataType.splice(i, 1);
-      dataTypeDeleted.push({
+      data.splice(i, 1);
+      nextData.push({
         title: title,
         description: description,
         idd: ed,
@@ -99,7 +62,7 @@ const deleteCard = (dataType, dataTypeDeleted) => {
   });
 };
 
-const editCard = (dataType, modalWrapper, sectionType) => {
+const editCard = (dataType, modalWrapper, sectionType, data) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
@@ -108,7 +71,6 @@ const editCard = (dataType, modalWrapper, sectionType) => {
   const newTitile = document.querySelector("#title");
   const newDescription = document.querySelector("#description");
   const submitButton = document.querySelector("#submit");
-  const todoSection = document.querySelector("#todo");
 
   modalWrapper.style.display = "block";
 
@@ -128,8 +90,9 @@ const editCard = (dataType, modalWrapper, sectionType) => {
           idd: ed,
         });
       }
-      drawList(dataType, sectionType);
-
+      console.log("dataTodo", data.todo);
+      console.log("dataInprog", data.inProgress);
+      drawList(data, sectionType);
       modalWrapper.style.display = "none";
     });
   });
@@ -140,17 +103,17 @@ const editCard = (dataType, modalWrapper, sectionType) => {
   });
 };
 
-const createNextCard = (dataTodo, inProgress) => {
+const createNextCard = (data, nextData) => {
   const card = event.target.closest(".card");
   const title = card.querySelector(".title").textContent;
   const description = card.querySelector(".description").textContent;
-  const ed = card.id;
+  const ed = +card.id;
 
-  dataTodo.forEach((el, i) => {
-    if (el.title === title && el.description === description && el.idd == ed) {
-      dataTodo.splice(i, 1);
-      inProgress.push({ title: title, description: description, idd: ed });
-      console.log(inProgress);
+  data.forEach((el, i) => {
+    if (el.title === title && el.description === description && el.idd === ed) {
+      data.splice(i, 1);
+      nextData.push({ title: title, description: description, idd: ed });
+      console.log(nextData);
     }
   });
 };
@@ -183,48 +146,51 @@ const init = () => {
       description: inputDescription.value,
       idd: Date.now(),
     });
-    drawListt(data.todo, todoSection);
+    drawList(data, "todo");
+    console.log("dataTodo", data.todo);
     form.reset();
 
     cardBloks.addEventListener("click", (event) => {
-      //   let a = event.target.closest("#todo");
       const desc = event.target.closest(".desc");
-      const descsMass = document.querySelectorAll(".desc");
-      //   const nextDesc = desc.next().find("div.desc").id;
-      const lastDesk = descsMass[descsMass.length - 1].id;
+
+      const deskId = event.target.closest(".desc").id;
+
+      const desksIdMass = [...document.querySelectorAll(".desc")].map(
+        (desk) => desk.id
+      );
+
+      const nextDeskId = desksIdMass.findIndex((id) => id === deskId) + 1;
+
       switch (event.target.classList.value) {
         case "deleteButton":
-          deleteCard(data[desc.id], data.deleted);
-          drawList(data[desc.id], desc.id);
-          drawList(data.deleted, lastDesk);
+          deleteCard(data[deskId], data.deleted);
+          drawList(data, deskId);
+          drawList(data, "deleted");
 
           break;
         case "editButton":
-          editCard(data[desc.id], modalWrapper, desc.id);
-
-          editCard(data[desc.id], modalWrapper, desc.id);
-
-          editCard(data[desc.id], modalWrapper, desc.id);
+          editCard(data[deskId], modalWrapper, deskId, data);
 
           break;
         case "nextButton":
-          if (desc.id === "todo") {
-            createNextCard(data.todo, data.inProgress);
-            drawListt(data.inProgress, sectionInProgress);
-            drawListt(data.todo, todoSection);
-          } else if (desc.id === "inProgress") {
-            createNextCard(data.inProgress, data.done);
-            drawListt(data.inProgress, sectionInProgress);
-            drawListt(data.done, sectionDone);
-          }
-          //   createNextCard(data[desc.id], data.inProgress);
-          //    drawList(data.inProgress, sectionInProgress);
-          //     drawList(data.todo, todoSection);
+          // if (desc.id === "todo") {
+          //   createNextCard(data.todo, data.inProgress);
+          //   drawListt(data.inProgress, sectionInProgress);
+          //   drawListt(data.todo, todoSection);
+          // } else if (desc.id === "inProgress") {
+          //   createNextCard(data.inProgress, data.done);
+          //   drawListt(data.inProgress, sectionInProgress);
+          //   drawListt(data.done, sectionDone);
+          // }
+          console.log(deskId);
+          createNextCard(data[deskId], data[desksIdMass[nextDeskId]]);
+          drawList(data, [desksIdMass[nextDeskId]]);
+          drawList(data, deskId);
 
           break;
         case "clearAllButton":
           data.deleted = [];
-          drawList(data[desc.id], desc.id);
+          drawList(data, "deleted");
 
           break;
         default:
