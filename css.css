@@ -58,7 +58,7 @@
   display: none;
 }
 
-.cardBloks {
+.cardBlocks {
   display: flex;
   column-gap: 25px;
   max-width: 1170px;

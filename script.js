@@ -1,10 +1,44 @@
+const returnVariable = () => {
+  const card = event.target.closest(".card");
+  const title = card.querySelector(".title").textContent;
+  const description = card.querySelector(".description").textContent;
+  const cardId = +card.id;
+  const desc = event.target.closest(".desc");
+
+  const deskId = desc.id;
+
+  const desksIdMass = [...document.querySelectorAll(".desc")].map(
+    (desk) => desk.id
+  );
+
+  const nextDeskId = desksIdMass.findIndex((id) => id === deskId) + 1;
+
+  return { title, description, cardId, deskId, desksIdMass, nextDeskId };
+};
+
+const addCards = (data) => {
+  const form = document.querySelector("#form");
+  const inputTitle = document.querySelector("#inputTitle");
+  const inputDescription = document.querySelector("#inputDescription");
+  event.preventDefault(); // препятствует перезагрузке страницы при нажатии на кнопку в форме
+
+  data.todo.push({
+    title: inputTitle.value,
+    description: inputDescription.value,
+    id: Date.now(),
+  });
+  drawList(data, "todo");
+  console.log("dataTodo", data.todo);
+  form.reset();
+};
+
 const drawList = (data, sectionId) => {
   let section = document.querySelector(`#${sectionId}`);
   console.log();
   section.innerHTML = "";
   data[sectionId].forEach((element) => {
     section.innerHTML += `
-              <div class="card" id="${element.idd}">
+              <div class="card" id="${element.id}">
               <span>Title:</span>
                   <span class="title">${element.title}</span>
                 </br>
@@ -35,66 +69,52 @@ const drawList = (data, sectionId) => {
   });
 };
 
-// const returnVariable = (card, title, description) => {
-//   const card = event.target.closest(".card");
-//   const title = card.querySelector(".title").textContent;
-//   const description = card.querySelector(".description").textContent;
-
-//   return {card, title, description};
-// };
-
-const deleteCard = (data, nextData) => {
-  const card = event.target.closest(".card");
-  const title = card.querySelector(".title").textContent;
-  const description = card.querySelector(".description").textContent;
-  const todoSection = document.querySelector("#todo");
-  const ed = +card.id;
+const deleteCard = (data) => {
+  const { title, description, cardId, deskId, desksIdMass, nextDeskId } =
+    returnVariable();
 
   console.log();
 
-  data.forEach((el, i) => {
-    if (el.title === title && el.description === description && el.idd === ed) {
-      data.splice(i, 1);
-      nextData.push({
+  data[deskId].forEach((el, i) => {
+    if (el.id === cardId) {
+      data[deskId].splice(i, 1);
+      data.deleted.push({
         title: title,
         description: description,
-        idd: ed,
+        id: cardId,
       });
     }
   });
+  drawList(data, deskId);
+  drawList(data, "deleted");
 };
 
-const editCard = (dataType, modalWrapper, sectionType, data) => {
-  const card = event.target.closest(".card");
-  const title = card.querySelector(".title").textContent;
-  const description = card.querySelector(".description").textContent;
-  const ed = +card.id;
+const editCard = (data) => {
+  const { title, description, cardId, deskId, desksIdMass, nextDeskId } =
+    returnVariable();
 
-  const newTitile = document.querySelector("#title");
-  const newDescription = document.querySelector("#description");
+  const modalInputTitleValue = document.querySelector("#title");
+  const modalInputDescriptionValue = document.querySelector("#description");
   const submitButton = document.querySelector("#submit");
+  const modalWrapper = document.querySelector(".wrapper");
 
   modalWrapper.style.display = "block";
 
-  newTitile.value = title;
-  newDescription.value = description;
+  modalInputTitleValue.value = title;
+  modalInputDescriptionValue.value = description;
 
   submitButton.addEventListener("click", (event) => {
-    dataType.forEach((el, i) => {
-      if (
-        el.title === title &&
-        el.description === description &&
-        el.idd === ed
-      ) {
-        dataType.splice(i, 1, {
-          title: newTitile.value,
-          description: newDescription.value,
-          idd: ed,
+    data[deskId].forEach((el, i) => {
+      if (el.id === cardId) {
+        data[deskId].splice(i, 1, {
+          title: modalInputTitleValue.value,
+          description: modalInputDescriptionValue.value,
+          id: cardId,
         });
       }
       console.log("dataTodo", data.todo);
       console.log("dataInprog", data.inProgress);
-      drawList(data, sectionType);
+      drawList(data, deskId);
       modalWrapper.style.display = "none";
     });
   });
@@ -105,34 +125,53 @@ const editCard = (dataType, modalWrapper, sectionType, data) => {
   });
 };
 
-const createNextCard = (data, nextData) => {
-  const card = event.target.closest(".card");
-  const title = card.querySelector(".title").textContent;
-  const description = card.querySelector(".description").textContent;
-  const ed = +card.id;
+const createNextCard = (data) => {
+  const { title, description, cardId, deskId, desksIdMass, nextDeskId } =
+    returnVariable();
 
-  data.forEach((el, i) => {
-    if (el.title === title && el.description === description && el.idd === ed) {
-      data.splice(i, 1);
-      nextData.push({ title: title, description: description, idd: ed });
-      console.log(nextData);
+  data[deskId].forEach((el, i) => {
+    if (el.id === cardId) {
+      data[deskId].splice(i, 1);
+      data[desksIdMass[nextDeskId]].push({
+        title: title,
+        description: description,
+        id: cardId,
+      });
+      console.log(data[desksIdMass[nextDeskId]]);
     }
   });
+
+  drawList(data, [desksIdMass[nextDeskId]]);
+  drawList(data, deskId);
+};
+
+const restoreCard = (data) => {
+  const { title, description, cardId, deskId, desksIdMass, nextDeskId } =
+    returnVariable();
+  data[deskId].forEach((el, i) => {
+    if (el.id === cardId) {
+      data[deskId].splice(i, 1);
+      data.todo.push({
+        title: title,
+        description: description,
+        id: cardId,
+      });
+    }
+  });
+
+  drawList(data, "deleted");
+  drawList(data, "todo");
+  console.log(data.deleted);
+};
+
+const clearAllFromDeleted = (data) => {
+  data.deleted = [];
+  drawList(data, "deleted");
 };
 
 const init = () => {
-  const modalWrapper = document.querySelector(".wrapper");
-  const todoList = document.querySelector(".todoList");
-  const form = document.querySelector("#form");
-  const inputTitle = document.querySelector("#inputTitle");
-  const inputDescription = document.querySelector("#inputDescription");
   const addCardButton = document.querySelector("#addCardButton");
-  const sectionInProgress = document.querySelector("#inProgress");
-  const todoSection = document.querySelector("#todo");
-  const cardBloks = document.querySelector(".cardBloks");
-  const sectionDeleted = document.querySelector("#delete");
-  const sectionDone = document.querySelector("#done");
-  const clearAllButton = document.querySelector(".clearAllButton");
+  const cardBlocks = document.querySelector(".cardBlocks");
 
   const data = {
     todo: [],
@@ -142,61 +181,29 @@ const init = () => {
   };
 
   addCardButton.addEventListener("click", (event) => {
-    event.preventDefault(); // препятствует перезагрузке страницы при нажатии на кнопку в форме
-
-    data.todo.push({
-      title: inputTitle.value,
-      description: inputDescription.value,
-      idd: Date.now(),
-    });
-    drawList(data, "todo");
-    console.log("dataTodo", data.todo);
-    form.reset();
+    addCards(data);
   });
 
-  cardBloks.addEventListener("click", (event) => {
-    const desc = event.target.closest(".desc");
-
-    const deskId = desc.id;
-
-    const desksIdMass = [...document.querySelectorAll(".desc")].map(
-      (desk) => desk.id
-    );
-
-    const nextDeskId = desksIdMass.findIndex((id) => id === deskId) + 1;
-
+  cardBlocks.addEventListener("click", (event) => {
     switch (event.target.classList.value) {
       case "deleteButton":
-        deleteCard(data[deskId], data.deleted);
-        drawList(data, deskId);
-        drawList(data, "deleted");
-
+        deleteCard(data);
         break;
       case "editButton":
-        editCard(data[deskId], modalWrapper, deskId, data);
-
+        editCard(data);
         break;
       case "nextButton":
-        console.log(deskId);
-        createNextCard(data[deskId], data[desksIdMass[nextDeskId]]);
-        drawList(data, [desksIdMass[nextDeskId]]);
-        drawList(data, deskId);
-
+        createNextCard(data);
         break;
       case "return":
-        deleteCard(data[deskId], data.todo);
-        drawList(data, "deleted");
-        drawList(data, "todo");
-        console.log(data.deleted);
-
+        restoreCard(data);
+        break;
+      case "clearAllButton":
+        clearAllFromDeleted(data);
         break;
       default:
         break;
     }
-  });
-  clearAllButton.addEventListener("click", (event) => {
-    data.deleted = [];
-    drawList(data, "deleted");
   });
 };
 
