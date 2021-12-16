@@ -1,7 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.container {
+  max-width: 1170px;
+  padding: 0 16px;
+  margin: auto;
+}
+
+.todoTitle {
+  text-align: center;
+  color: aqua;
+  margin-bottom: 40px;
+  font-family: Shadows Into Light;
+  letter-spacing: 5px;
+  font-size: 55px;
 }
 
 .wrapperTodoList {
@@ -61,9 +78,6 @@
 .cardBlocks {
   display: flex;
   column-gap: 25px;
-  max-width: 1170px;
-  padding: 0 16px;
-  margin: auto;
 }
 
 .form {
@@ -109,6 +123,10 @@
 }
 
 .cardTitle {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: center;
+  font-family: Shadows Into Light;
+  font-style: normal;
+  font-size: 25px;
+  color: #6200ff;
 }
